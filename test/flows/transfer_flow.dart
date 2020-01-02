@@ -1,6 +1,8 @@
+import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/main.dart';
 import 'package:bytebank/models/contact.dart';
+import 'package:bytebank/models/transaction.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:bytebank/screens/transaction_form.dart';
@@ -24,9 +26,8 @@ void main() {
     final dashboard = find.byType(Dashboard);
     expect(dashboard, findsOneWidget);
 
-    when(mockContactDao.findAll()).thenAnswer((invocation) async {
-      return [Contact(0, 'Alex', 1000)];
-    });
+    final alex = Contact(0, 'Alex', 1000);
+    when(mockContactDao.findAll()).thenAnswer((invocation) async => [alex]);
 
     await clickOnTheTransferFeatureItem(tester);
     await tester.pumpAndSettle();
@@ -68,5 +69,31 @@ void main() {
 
     final transactionAuthDialog = find.byType(TransactionAuthDialog);
     expect(transactionAuthDialog, findsOneWidget);
+
+    final textFieldPassword = find.byKey(transactionAuthDialogTextFieldPasswordKey);
+    expect(textFieldPassword, findsOneWidget);
+    await tester.enterText(textFieldPassword, '1000');
+
+    final cancelButton = find.widgetWithText(FlatButton, 'Cancel');
+    expect(cancelButton, findsOneWidget);
+    final confirmButton = find.widgetWithText(FlatButton, 'Confirm');
+    expect(confirmButton, findsOneWidget);
+
+    when(mockTransactionWebClient.save(Transaction(null, 200, alex), '1000'))
+    .thenAnswer((_) async => Transaction(null, 200, alex));
+
+    await tester.tap(confirmButton);
+    await tester.pumpAndSettle();
+
+    final successDialog = find.byType(SuccessDialog);
+    expect(successDialog, findsOneWidget);
+
+    final okButton = find.widgetWithText(FlatButton, 'Ok');
+    expect(okButton, findsOneWidget);
+    await tester.tap(okButton);
+    await tester.pumpAndSettle();
+
+    final contactsListBack = find.byType(ContactsList);
+    expect(contactsListBack, findsOneWidget);
   });
 }
