@@ -1,7 +1,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/models/transaction.dart';
+import '../../lib/models/transaction.dart';
 
 void main(){
   test('Should return the value when create a transaction', (){
