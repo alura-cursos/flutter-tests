@@ -3,9 +3,9 @@ import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/transaction.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class TransactionsList extends StatelessWidget {
-
   final TransactionWebClient _webClient = TransactionWebClient();
 
   @override
@@ -26,7 +26,7 @@ class TransactionsList extends StatelessWidget {
             case ConnectionState.active:
               break;
             case ConnectionState.done:
-              if(snapshot.hasData){
+              if (snapshot.hasData) {
                 final List<Transaction> transactions = snapshot.data;
                 if (transactions.isNotEmpty) {
                   return ListView.builder(
@@ -36,17 +36,23 @@ class TransactionsList extends StatelessWidget {
                         child: ListTile(
                           leading: Icon(Icons.monetization_on),
                           title: Text(
-                            transaction.value.toString(),
+                            transaction.getCurrency(),
                             style: TextStyle(
                               fontSize: 24.0,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          subtitle: Text(
-                            transaction.contact.accountNumber.toString(),
-                            style: TextStyle(
-                              fontSize: 16.0,
-                            ),
+                          subtitle: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                transaction.contact.accountNumber.toString(),
+                              ),
+                              Text(
+                                transaction.getFormattedDateTime(),
+                              ),
+                            ],
                           ),
                         ),
                       );
