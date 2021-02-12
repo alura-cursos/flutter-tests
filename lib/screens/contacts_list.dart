@@ -15,6 +15,7 @@ class ContactsList extends StatefulWidget {
 }
 
 class _ContactsListState extends State<ContactsList> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,13 +59,15 @@ class _ContactsListState extends State<ContactsList> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => ContactForm(
-                contactDao: widget.contactDao,
-              ),
-            ),
-          );
+          Navigator.of(context)
+              .push(
+                MaterialPageRoute(
+                  builder: (context) => ContactForm(
+                    contactDao: widget.contactDao,
+                  ),
+                ),
+              )
+              .then((value) => setState(() {}));
         },
         child: Icon(
           Icons.add,
